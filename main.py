@@ -15,6 +15,6 @@ class USER(BaseModel):
     
 @app.put("/items/{item_id}")
 
-async def update(item_id:int, item:ITEM, user:USER,importance:Annotated[int,Body()]):
-    results={"item_id":item_id,"item":item,"user":user,"importance": importance}
+async def update(item_id:int,item:Annotated[ITEM,Body(embed=True)]):
+    results={"item_id":item_id,"item":item}
     return results
