@@ -7,10 +7,10 @@ class IMAGE(BaseModel):
     name:str
     
 class ITEM(BaseModel):
-    name:str=Field(examples="SAVITHA")
-    price:float=Field(examples="20.7")
-    tax:float|None=None,Field(exaples="10.0")
-    description:float|None= Field(default=None,title="description",max_length=50,examples="hey here")
+    name:str=Field(examples=["SAVITHA"])
+    price:float=Field(examples=["20.7"])
+    tax:float|None=None,Field(examples=["10.0"])
+    description:float|None= Field(default=None,title="description",max_length=50,examples=["hey here"])
     tag:list[str]=[]
     image:list[IMAGE]|None=None
 class USER(BaseModel):
