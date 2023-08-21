@@ -1,9 +1,9 @@
 from fastapi import FastAPI
-from pydantic import  BaseModel,Field
+from pydantic import  BaseModel,Field,HttpUrl
 
 app = FastAPI()
 class IMAGE(BaseModel):
-    url:str
+    url:HttpUrl
     name:str
     
 class ITEM(BaseModel):
@@ -12,7 +12,7 @@ class ITEM(BaseModel):
     tax:float|None=None
     description:float|None= Field(default=None,title="description",max_length=50)
     tag:list[str]=[]
-    image:IMAGE|None=None
+    image:list[IMAGE]|None=None
 class USER(BaseModel):
     username:str
     fullname:str|None
