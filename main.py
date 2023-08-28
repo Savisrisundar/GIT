@@ -1,20 +1,20 @@
 from fastapi import FastAPI
-from pydantic import  BaseModel,Field
+from pydantic import BaseModel
 
-app = FastAPI()
+app=FastAPI()
 
-class ITEM(BaseModel):
+class Items(BaseModel):
     name:str
+    description: str|None=None
     price:float
-    tax:float|None=None
-    description:float|None= Field(default=None,title="description",max_length=50)
+    tax:float
+    tags:list[str]=[]
     
-class USER(BaseModel):
-    username:str
-    fullname:str|None
-    
-@app.put("/items/{item_id}")
+@app.post("/items/")
+async def create_item(item:Items)->Items:
+    return item
 
-async def update(item_id:int, item:ITEM, user:USER):
-    results={"item_id":item_id,"item":item,"user":user}
-    return results
+@app.get("/items/")
+async def read_item()->list[Items]:
+    return [Items(name="tom",price=50.5)]
+    
