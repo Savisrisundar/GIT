@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Body
+from fastapi import FastAPI, Body,Query
 from datetime import datetime, time, timedelta
 from uuid import UUID
 from typing import Annotated
@@ -12,9 +12,7 @@ class Items(BaseModel):
     tax:float
     tags:list[str]=[]
     
-@app.post("/items/")
-async def create_item(item:Items)->Items:
-    return item
+@app.put("/items/{item_id}")
 
 @app.put("/items/{item_id}")
 async def read_items(
