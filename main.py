@@ -1,24 +1,23 @@
 from fastapi import FastAPI
-from pydantic import  BaseModel,Field,HttpUrl
+from pydantic import BaseModel,HttpUrl
 
 app = FastAPI()
 class IMAGE(BaseModel):
     url:HttpUrl
     name:str
     
-class ITEM(BaseModel):
+
+
+
+class Items(BaseModel):
     name:str
+    description: str|None=None
     price:float
-    tax:float|None=None
-    description:float|None= Field(default=None,title="description",max_length=50)
-    tag:list[str]=[]
-    image:list[IMAGE]|None=None
-class USER(BaseModel):
-    username:str
-    fullname:str|None
+    tax:float
+    tags:list[str]=[]
     
 @app.put("/items/{item_id}")
 
-async def update(item_id:int, item:ITEM, user:USER):
-    results={"item_id":item_id,"item":item,"user":user}
+async def update(item_id:int, item:Items):
+    results={"item_id":item_id,"item":item}
     return results
