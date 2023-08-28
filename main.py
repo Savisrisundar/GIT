@@ -1,24 +1,20 @@
 from fastapi import FastAPI
-from pydantic import  BaseModel,Field,HttpUrl
+from pydantic import BaseModel
 
-app = FastAPI()
-class IMAGE(BaseModel):
-    url:HttpUrl
+app=FastAPI()
+
+class Items(BaseModel):
     name:str
+    description: str|None=None
+    price:float
+    tax:float
+    tags:list[str]=[]
     
-class ITEM(BaseModel):
-    name:str=Field(examples=["SAVITHA"])
-    price:float=Field(examples=["20.7"])
-    tax:float|None=None,Field(examples=["10.0"])
-    description:float|None= Field(default=None,title="description",max_length=50,examples=["hey here"])
-    tag:list[str]=[]
-    image:list[IMAGE]|None=None
-class USER(BaseModel):
-    username:str
-    fullname:str|None
-    
-@app.put("/items/{item_id}")
+@app.post("/items/")
+async def create_item(item:Items)->Items:
+    return item
 
-async def update(item_id:int, item:ITEM, user:USER):
-    results={"item_id":item_id,"item":item,"user":user}
-    return results
+@app.get("/items/")
+async def read_item()->list[Items]:
+    return [Items(name="tom",price=50.5)]
+    
