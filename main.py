@@ -1,32 +1,10 @@
-from fastapi import FastAPI, Body,Query
-from datetime import datetime, time, timedelta
-from uuid import UUID
+from fastapi import FastAPI, File, UploadFile
 from typing import Annotated
-from pydantic import BaseModel
-app = FastAPI()
 
-class Items(BaseModel):
-    name:str
-    description: str|None=None
-    price:float
-    tax:float
-    tags:list[str]=[]
-    
-@app.put("/items/{item_id}")
-
-@app.put("/items/{item_id}")
-async def read_items(
-    item_id:UUID,
-    start_date_time:Annotated[datetime|None, Body()]=None,
-    end_time:Annotated[time|None,Body()]=None,
-    q: str | None = None):
-    return {"item_id": item_id,
-        "start_datetime": start_date_time,
-        "end_datetime": end_time}
-
-@app.get("/items/")
-async def read_items(q: Annotated[str | None , Query(alias="item-query")] = None):
-    results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
-    if q:
-        results.update({"q": q})
-    return results
+app=FastAPI()
+@app.post("/files/")
+async def read(files:Annotated[bytes,File()]):
+    return {"file":files}
+@app.post("/upload/")
+async def upload(files:UploadFile):
+    return {"file name":files.filename}
