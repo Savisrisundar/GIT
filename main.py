@@ -1,32 +1,19 @@
-from fastapi import FastAPI, Body,Query
-from datetime import datetime, time, timedelta
-from uuid import UUID
-from typing import Annotated
+from fastapi import FastAPI
+from datetime import datetime
+from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
-app = FastAPI()
 
-class Items(BaseModel):
-    name:str
-    description: str|None=None
-    price:float
-    tax:float
-    tags:list[str]=[]
+fakedb={}
+
+class Item(BaseModel):
+    title: str
+    timestamp: datetime
+    description: str | None = None
     
-@app.put("/items/{item_id}")
-
-@app.put("/items/{item_id}")
-async def read_items(
-    item_id:UUID,
-    start_date_time:Annotated[datetime|None, Body()]=None,
-    end_time:Annotated[time|None,Body()]=None,
-    q: str | None = None):
-    return {"item_id": item_id,
-        "start_datetime": start_date_time,
-        "end_datetime": end_time}
-
-@app.get("/items/")
-async def read_items(q: Annotated[str | None , Query(alias="item-query")] = None):
-    results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
-    if q:
-        results.update({"q": q})
-    return results
+    
+app=FastAPI()
+@app.put("/items/{id}")
+async def read(id:str,item:Item):
+    jsoncom=jsonable_encoder(item)
+    fakedb[id]=jsoncom
+    return fakedb
