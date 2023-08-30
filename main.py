@@ -1,10 +1,25 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 
-app=FastAPI()
-items={"item 1": "Number 1","item 2": "Number 2"}
 
-@app.get("/items/{item_id}")
-async def read(item_id:str):
-    if item_id not in items:
-        return HTTPException(status_code=400,detail="item not found")
-    return {"item":items[item_id]}
+class UnicornException(Exception):
+    def __init__(self, name: str):
+        self.name = name
+
+
+app = FastAPI()
+
+
+@app.exception_handler(UnicornException)
+async def unicorn_exception_handler(request: Request, exc: UnicornException):
+    return JSONResponse(
+        status_code=418,
+        content={"message": f"Oops! {exc.name} did something. There goes a rainbow..."},
+    )
+
+
+@app.get("/unicorns/{name}")
+async def read_unicorn(name: str):
+    if name == "yolo":
+        raise UnicornException(name=name)
+    return {"unicorn_name": name}
