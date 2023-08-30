@@ -1,32 +1,10 @@
-from fastapi import FastAPI, Body,Query
-from datetime import datetime, time, timedelta
-from uuid import UUID
-from typing import Annotated
-from pydantic import BaseModel
-app = FastAPI()
+from fastapi import FastAPI, HTTPException
 
-class Items(BaseModel):
-    name:str
-    description: str|None=None
-    price:float
-    tax:float
-    tags:list[str]=[]
-    
-@app.put("/items/{item_id}")
+app=FastAPI()
+items={"item 1": "Number 1","item 2": "Number 2"}
 
-@app.put("/items/{item_id}")
-async def read_items(
-    item_id:UUID,
-    start_date_time:Annotated[datetime|None, Body()]=None,
-    end_time:Annotated[time|None,Body()]=None,
-    q: str | None = None):
-    return {"item_id": item_id,
-        "start_datetime": start_date_time,
-        "end_datetime": end_time}
-
-@app.get("/items/")
-async def read_items(q: Annotated[str | None , Query(alias="item-query")] = None):
-    results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
-    if q:
-        results.update({"q": q})
-    return results
+@app.get("/items/{item_id}")
+async def read(item_id:str):
+    if item_id not in items:
+        return HTTPException(status_code=400,detail="item not found")
+    return {"item":items[item_id]}
