@@ -1,32 +1,13 @@
-from fastapi import FastAPI, Body,Query
-from datetime import datetime, time, timedelta
-from uuid import UUID
-from typing import Annotated
-from pydantic import BaseModel
+from typing import Annotated, Union
+from fastapi import Depends, FastAPI
 app = FastAPI()
-
-class Items(BaseModel):
-    name:str
-    description: str|None=None
-    price:float
-    tax:float
-    tags:list[str]=[]
-    
-@app.put("/items/{item_id}")
-
-@app.put("/items/{item_id}")
-async def read_items(
-    item_id:UUID,
-    start_date_time:Annotated[datetime|None, Body()]=None,
-    end_time:Annotated[time|None,Body()]=None,
-    q: str | None = None):
-    return {"item_id": item_id,
-        "start_datetime": start_date_time,
-        "end_datetime": end_time}
-
+async def common_parameters(
+    q: Union[str, None] = None, skip: int = 0, limit: int = 100
+):
+    return {"q": q, "skip": skip, "limit": limit}
 @app.get("/items/")
-async def read_items(q: Annotated[str | None , Query(alias="item-query")] = None):
-    results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
-    if q:
-        results.update({"q": q})
-    return results
+async def read_items(commons: Annotated[dict, Depends(common_parameters)]):
+    return commons
+@app.get("/users/")
+async def read_users(commons: Annotated[dict, Depends(common_parameters)]):
+    return commons
