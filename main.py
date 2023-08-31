@@ -1,32 +1,11 @@
-from fastapi import FastAPI, Body,Query
-from datetime import datetime, time, timedelta
-from uuid import UUID
+from fastapi import FastAPI, Depends
+from fastapi.security import OAuth2PasswordBearer
 from typing import Annotated
-from pydantic import BaseModel
-app = FastAPI()
 
-class Items(BaseModel):
-    name:str
-    description: str|None=None
-    price:float
-    tax:float
-    tags:list[str]=[]
-    
-@app.put("/items/{item_id}")
-
-@app.put("/items/{item_id}")
-async def read_items(
-    item_id:UUID,
-    start_date_time:Annotated[datetime|None, Body()]=None,
-    end_time:Annotated[time|None,Body()]=None,
-    q: str | None = None):
-    return {"item_id": item_id,
-        "start_datetime": start_date_time,
-        "end_datetime": end_time}
+app=FastAPI()
+OAuth2=OAuth2PasswordBearer(tokenUrl="token")
 
 @app.get("/items/")
-async def read_items(q: Annotated[str | None , Query(alias="item-query")] = None):
-    results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
-    if q:
-        results.update({"q": q})
-    return results
+async def read(token:Annotated[str,Depends(OAuth2)]):
+    return {"token":token}
+
